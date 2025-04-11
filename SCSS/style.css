@@ -1,0 +1,8 @@
+.navbar-nav {
+    margin: 0 auto; /* Centre le menu horizontalement */
+    display: flex; /* Assure un alignement des enfants en ligne */
+    justify-content: center; /* Centre les éléments horizontalement */
+  }
+  .ul-menu{
+    font-weight: bold ;
+  }
