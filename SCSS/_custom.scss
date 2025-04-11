@@ -1,0 +1,25 @@
+$primary: #906427;
+$secondary: #B6AC97;
+$dark:#392C1E;
+$black:  #292222;
+$font-family-sans-serif: "Montserrat", sans-serif !default;
+
+
+// MES VARIABLES COULEURS PERSONNELLES
+$primary: #906427 !default;
+$secondary: #B6AC97 !default;
+$dark:#392C1E !default;
+$black:  #292222 !default;
+$white: #ffffff !default;
+
+// LES POLICES
+$font-family-sans-serif: "Montserrat", sans-serif !default;
+$font-family-monospace: "Courier New", monospace !default;
+$font-family-base: $font-family-sans-serif !default;
+$font-family-hind-madurai: "Hind Madurai", sans-serif !default;
+$font-family-roboto: "Roboto", sans-serif !default;
+
+
+
+
+@import "../node_modules/bootstrap/scss/bootstrap";
