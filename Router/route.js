@@ -5,4 +5,8 @@ export default class Route {
       this.pathHtml = pathHtml;
       this.pathJS = pathJS;
     }
+
+    getFullPath() {
+        return this.pathJS ? `${this.pathHtml}, ${this.pathJS}` : this.pathHtml;
+    }
 }

@@ -11972,4 +11972,67 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+}
+@media (max-width: 768px) {
+  section.footer {
+    display: flex;
+    flex-direction: column;
+  }
+}
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+main {
+  min-height: 100vh;
+  margin-bottom: 180px;
+}
+
+p {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  font-family: "Hind Madurai", sans-serif;
+  font-weight: 600;
+  color: #392C1E;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  bottom: 0;
+  width: 100%;
+  align-content: flex-end;
+  justify-content: space-between;
+}
+
+.img1 {
+  position: absolute;
+  bottom: 0;
+  height: 500px;
+  width: 600px;
+  left: 0;
+  border-top-right-radius: 40px;
+}
+
+.img2 {
+  position: absolute;
+  bottom: 0;
+  height: 500px;
+  width: 600px;
+  right: 0;
+  border-top-left-radius: 40px;
+}
+
+.login-form {
+  background-image: url(img/cecodrive.webp);
 }/*# sourceMappingURL=main.css.map */
