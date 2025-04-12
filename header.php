@@ -45,3 +45,8 @@
         </div>
         </nav>
   </header>
+
+  <div class="col-md-6 justify-content-start">
+        <h1>EcoRide</h1>
+        <p id="p1">Roulez vert, partagez mieux et économisez dès votre inscription !</p>
+    </div>
