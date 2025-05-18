@@ -55,7 +55,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <label class="form-label fw-bold" for="password">Mot de passe</label>
                   <input type="password" id="password"  name="mot_de_passe" class="form-control fst-italic"
                   placeholder="Entrez mot de passe" />
-                </div>            
+                </div>
+
+                 <!-- Password input confirm -->
+                 <div data-mdb-input-init class="form-outline mb-3">
+                    <label class="form-label fw-bold" for="password">Confirmez mot de passe</label>
+                    <input type="password" id="confirmPassword" name="passwordInput" class="form-control fst-italic"
+                    placeholder="Confirmez mot de passe" />
+                  </div>
                 <div class="d-flex justify-content-between align-items-center">
                   <!-- Checkbox -->
                   <div class="form-check mb-0">

@@ -13,10 +13,10 @@ include_once 'header.php';
     <div class="mb-0 container-fluid">
       <div class="row">
           <div class="justify-content-start col-12 col-sm-6 col-md-6 col-lg-6">
-              <img src="img/gente (2).webp" alt="voyageurs" class="img1">
+              <img src="img/OIP 11.jpg" alt="voyageurs" class="img1">
           </div>
           <div class="justify-content-end col-12 col-sm-3 col-md-3 col-lg-3">
-              <img src="img/OIP 10.jpg" alt="voyageurs" class="img2">
+              <img src="img/oipb.jpg" alt="voyageurs" class="img2">
           </div>
       </div>
     </div>

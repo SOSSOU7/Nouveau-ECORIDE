@@ -1,0 +1,359 @@
+                      /*STYLE MOBILE*/
+
+/* Configuration pour mobile (moins de 768px) */
+@media (max-width: 768px) {
+  section.footer {
+    display: flex;
+    flex-direction: column;
+  }
+  .grid {
+      grid-template-columns: 1fr; /* Une seule colonne */
+      grid-template-rows: auto; /* Lignes automatiques en fonction du contenu */
+      grid-gap: 10px; /* Espace entre les éléments */
+  }
+  .driver {
+    display: flex;
+    flex-direction: column; 
+    width: 300px;
+    height: 280px;
+    padding: 20px;
+    text-align: center;
+  }
+ div.driver-photo {
+    width: 100%; 
+    max-width: 80px;
+    height: auto; 
+    margin: 0 auto;
+    display: block;  
+    flex-direction: row; 
+    justify-content : center;
+
+  }
+
+/* 
+.driver-photo {
+  width: 100%;
+  max-width: 120p
+  height: auto;
+  display: block;
+  margin: 0 auto;
+} */
+
+
+.p-driver {
+  font-size: 100px;
+  font-weight: bold;
+}
+.yellow-opaque{
+  display: block;
+  width: 100px;
+  height: 30px;
+  background-color: rgba(255, 255, 0, 0.5);
+  margin: 2px;
+  border-radius: 10px;
+  padding: 5px;
+  row-gap: 2px;
+  }
+  
+  .yellow{
+    width:auto;
+    height: auto;
+      margin: 5px;
+      background-color: rgb(244, 244, 29);
+      border-radius: 8px;
+  }
+    
+  .top-right-button {
+  position: absolute;
+  top: 10px;
+  right: 55px;
+  border: 3px solid black;
+  border-radius: 8px;
+  color: white;
+  &:hover {
+    background-color: var(bg-info);
+    cursor: pointer;
+  }
+  }
+  .col-md-2 {
+    display: flex;
+    width:100%;
+    justify-content: center;
+    align-items: center;
+  }
+  .col-md-3 {
+    display: flex;
+    width:100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* .row {
+    display: flex;
+    align-items: flex-end;
+    bottom: 0;
+    width: 100%;
+    justify-content: space-between;
+  } */
+  
+  .driver {
+    width: 100%; /* S'adapte à l'écran */
+    padding: 5px; /* Ajoute de l'espace autour des éléments */
+  }
+  
+  .yellow-opaque {
+    width: 100%; /* Adapte la boîte au format mobile */
+    height: auto; /* Ajuste la hauteur automatiquement */
+  }
+
+  /*STYLE POUR LE FILTRE DE COVOITURAGE*/
+  .filter{
+    font-size: 10px;
+    display: flex;
+   flex-direction: column;
+    color:white;
+    top: 50px;
+    padding:5px;
+    margin: 10px;
+    width: auto; /* Ajusté pour mobile */
+    height: auto; /* Ajusté pour mobile */
+    border-radius: 15px;
+    background-color: var(--bs-gray-600);
+  }
+  .filter-input{
+    width: 50px; /* Ajusté pour mobile */
+  }
+  .user-list{
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre les éléments horizontalement */
+    justify-content: center; /* Centre les éléments verticalement */
+  }
+}
+
+
+                     /*STYLE DESKTOP*/
+
+/* Style pour le menu de navigation */
+.navbar-nav {
+    margin: 0 auto; /* Centre le menu horizontalement */
+    display: flex; /* Assure un alignement des enfants en ligne */
+    justify-content: center; /* Centre les éléments horizontalement */
+  }
+  .ul-menu{
+    font-weight: bold ;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* deux colonnes de même taille */
+    grid-template-rows: auto; /* lignes automatiques en fonction du contenu */
+    grid-gap: 15px;
+    padding: 10px;
+}
+  .driver {
+    display: flex;
+    width: auto;
+    height: auto;
+    padding: px;
+    text-align: center;
+  }
+.p-driver {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+    .yellow-opaque{
+display: block;
+width: 150px;
+height: 150px;
+background-color: rgba(255, 255, 0, 0.5);
+margin-bottom: 1px;
+border-radius: 10px;
+}
+
+.yellow{
+  width:auto;
+  height: auto;
+    background-color: rgb(244, 244, 29);
+    border-radius: 8px;
+}
+
+
+.top-right-button {
+position: absolute;
+top: 30px;
+right: 85px;
+border: 3px solid black;
+border-radius: 8px;
+color: white;
+&:hover {
+  background-color: var(bg-info);
+  cursor: pointer;
+}
+}
+.driver-photo {
+  width: 100px;
+}
+
+
+
+
+
+
+
+/* copier du fichier main.css*/
+
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+main {
+  min-height: 100vh;
+  margin-bottom: 200px;
+}
+
+p {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  font-family: "Hind Madurai", sans-serif;
+  font-weight: 600;
+  color: #392C1E;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  bottom: 0;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.img1 {
+  position: absolute;
+  bottom: 0;
+  height: 500px;
+  width: 600px;
+  left: 0;
+  border-top-right-radius: 40px;
+}
+
+.img2 {
+  position: absolute;
+  bottom: 0;
+  height: 500px;
+  width: 600px;
+  right: 0;
+  border-top-left-radius: 40px;
+}
+
+.login-form {
+  background-image: url(img/cecodrive.webp);
+}
+
+.covoitFormStyle {
+  background-color: transparent;
+}
+
+.infos1-size {
+  font-size: 15px;
+  font-weight: bold;  
+}
+
+/*STYLE FORMULAIRE DE FILTRE COVOITURAGE*/
+
+.filter{
+  position: absolute;
+  color:white;
+  justify-content: space-between;
+  top: 250px;
+  right: 50px;
+  padding:15px;
+  width: auto;
+  height: auto;
+  border-radius: 15px;
+  background-color: var(--bs-gray-600);
+}
+
+.filter-input{
+  width: 90px;
+  height: 40px;
+  margin: 5px;
+}
+.search-form{
+  background-color: rgb(244, 244, 29);
+  border-radius: 15px;
+  padding: 10px;
+  margin: 10px;
+}
+.driverGlobalInfo {
+  margin-top: 20px;
+  margin-bottom: 0;
+  border-radius: 15px 15px 0 0;
+  background-color:  rgba(26, 99, 106, 0.83);
+}
+.profile-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.admin-pic{
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.clientView {
+  background-color:rgba(241, 220, 15, 0.7);
+  border: none;
+  color: white;
+  margin-top: 5px;
+  border-radius: 10px;
+}
+.insertCovoit {
+  background-color:rgba(241, 220, 15, 0.7);
+  border: none;
+  margin: 5px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+.views-form {
+    width: 400px;
+    height: auto;
+    border-radius: 10px;
+    background: rgb(237, 215, 15, 0.9);
+    padding:10px;
+    margin: 10px;
+    } 
+    
+    /* .views-group{ 
+    display : flex;
+    align-items: center;
+} 
+
+.views-group label{
+    flex: 1;
+    margin:5px;
+} */
+.covoit-input{
+  width: 50%;
+  height: auto;
+  margin: 5px;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+
+

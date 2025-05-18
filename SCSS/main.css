@@ -11972,7 +11972,10 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
+  
 }
+
+/* 
 @media (max-width: 768px) {
   section.footer {
     display: flex;
@@ -12035,4 +12038,8 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
 
 .login-form {
   background-image: url(img/cecodrive.webp);
-}/*# sourceMappingURL=main.css.map */
+}
+
+.covoitFormStyle {
+  background-color: transparent;
+} */
