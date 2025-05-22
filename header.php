@@ -34,16 +34,22 @@ include_once 'db.php';
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <!--RETOUR A LA PAGE D'ACCEUIL-->
-                <a class="nav-link active fw-bold" href="/">ACCEUIL</a>
+                <a class="nav-link active fw-bold" href="index.php">ACCEUIL</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link fw-bold"  href="formulaire_covoiturage.php">ACCES AUX COVOITURAGES</a>
+                <a class="nav-link fw-bold"  href="formulaire_covoiturage.php">COVOITURAGES</a>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link fw-bold" href="#">CONTACTS</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link fw-bold" href="#" aria-disabled="true">CONNEXION/DECONNEXION</a>
+                <?php if (isset($_SESSION['utilisateur_id'])){ ?>
+                    <a class="nav-link fw-bold" href="logout.php" aria-disabled="true">DECONNEXION</a>
+                <?php }
+                      else{
+                        ?>
+                <a class="nav-link fw-bold" href="signin.php" aria-disabled="true">CONNEXION</a>
+                <?php } ?>
                 </li>
             </ul>
             </div>

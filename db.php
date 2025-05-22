@@ -2,7 +2,7 @@
 // CONNEXION A LA BASE DE DONNEES
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "root";
 $dbname = "ecoride";
 
 

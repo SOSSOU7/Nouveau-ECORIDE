@@ -355,5 +355,105 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
   padding: 5px;
 }
 
+/* Styles pour la section de filtre */
+.filter-section {
+  background-color: #f8f9fa; /* Arrière-plan clair */
+  border: 1px solid #dee2e6; /* Bordure subtile */
+  border-radius: 10px; /* Coins arrondis */
+  padding: 30px; /* Espacement intérieur */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce pour un effet de profondeur */
+  max-width: 600px; /* Limite la largeur du filtre pour une meilleure lisibilité */
+  margin: 40px auto; /* Centre la section horizontalement et ajoute de l'espace vertical */
+}
 
+.filter-title {
+  color: #007bff; /* Couleur bleue pour le titre, assortie au bouton */
+  font-size: 1.8rem; /* Taille de police plus grande */
+  font-weight: 700; /* Gras */
+  margin-bottom: 30px; /* Plus d'espace sous le titre */
+  position: relative; /* Pour la ligne décorative */
+}
+
+.filter-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background-color: #007bff; /* Ligne décorative sous le titre */
+  margin: 10px auto 0; /* Centre la ligne sous le titre */
+  border-radius: 5px;
+}
+
+.filter-item {
+  margin-bottom: 20px; /* Plus d'espace entre chaque groupe de formulaire */
+}
+
+.filter-item label {
+  font-weight: 600; /* Labels en gras */
+  color: #343a40; /* Couleur foncée pour les labels */
+  text-align: right; /* Aligne les labels à droite */
+  padding-right: 15px; /* Espacement entre label et input */
+}
+
+@media (max-width: 575.98px) {
+  .filter-item label {
+      text-align: left; /* Aligne les labels à gauche sur petits écrans */
+      padding-right: 0;
+      margin-bottom: 5px; /* Espacement sur petits écrans */
+  }
+}
+
+
+.filter-input {
+  border-radius: 5px; /* Coins arrondis pour les champs de saisie */
+  border: 1px solid #ced4da; /* Bordure standard */
+  padding: 10px 15px; /* Remplissage pour une meilleure sensation */
+  transition: all 0.3s ease; /* Transition douce pour le focus */
+}
+
+.filter-input:focus {
+  border-color: #80bdff; /* Couleur de bordure au focus */
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Ombre douce au focus */
+  outline: none; /* Supprime le contour par défaut du navigateur */
+}
+
+/* Styles pour les radios (Voiture écologique) */
+.form-check-input {
+  width: 1.2em; /* Taille légèrement plus grande pour les radios */
+  height: 1.2em;
+  margin-top: 0.25em; /* Ajuste l'alignement */
+}
+
+.radio-label {
+  font-weight: normal; /* Labels de radio normaux (pas en gras comme les autres) */
+  color: #343a40;
+}
+
+.search-btn {
+  background-color: #28a745; /* Bouton Rechercher en vert pour le contraste */
+  border-color: #28a745;
+  font-weight: bold;
+  padding: 10px 25px; /* Plus de remplissage pour le bouton */
+  border-radius: 5px; /* Coins arrondis */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Effet de transition */
+}
+
+.search-btn:hover {
+  background-color: #218838; /* Couleur plus foncée au survol */
+  border-color: #1e7e34;
+  transform: translateY(-2px); /* Effet de léger soulèvement au survol */
+}
+
+/* Ajustements pour les petits écrans */
+@media (max-width: 767.98px) {
+  .filter-section {
+      padding: 20px;
+      margin: 20px auto;
+  }
+  .filter-item label {
+      text-align: left; /* Aligne les labels à gauche sur les petits écrans */
+      margin-bottom: 5px;
+      padding-right: 0;
+  }
+}
 

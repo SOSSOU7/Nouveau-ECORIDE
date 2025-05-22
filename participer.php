@@ -3,7 +3,7 @@ session_start();
 require 'db.php'; // Fichier de connexion à la BDD
  
 if (!isset($_SESSION['utilisateur_id'])) {
-    header("Location: connexion.php");
+    header("Location: signin.php");
     exit;
 }
  

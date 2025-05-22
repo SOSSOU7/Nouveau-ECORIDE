@@ -1,438 +1,201 @@
 <?php
-include_once 'header.php';
+session_start();
+require_once 'auth.php'; // Assurez-vous que ce fichier initialise $conn
+include_once 'header.php'; // Assurez-vous que header.php inclut la balise <head> et le début de <body>
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['utilisateur_id'])) {
+    $_SESSION['error_notification'] = "Vous devez être connecté pour accéder à votre espace.";
+    header("Location: signin.php");
+    exit();
+}
+
+$utilisateur_id = $_SESSION['utilisateur_id'];
+
+// Définition des IDs de rôle selon votre table 'role' (récupérés ou définis comme constants)
+// Ces constantes DOIVENT correspondre aux IDs réels dans votre table 'role'
+$ID_ROLE_UTILISATEUR = 2; // Exemple: ID pour le rôle 'passager'
+$ID_ROLE_CHAUFFEUR = 4; // Exemple: ID pour le rôle 'chauffeur'
+$ID_ROLE_CHAUFFEUR_PASSAGER = 5; // Exemple: ID pour le rôle 'chauffeur_passager'
+
+// Initialiser les variables de session pour éviter les "null" si elles ne sont pas définies
+$_SESSION['utilisateur_pseudo'] = $_SESSION['utilisateur_pseudo'] ?? 'Non défini';
+$_SESSION['utilisateur_email'] = $_SESSION['utilisateur_email'] ?? 'non.defini@example.com';
+$_SESSION['utilisateur_nom'] = $_SESSION['utilisateur_nom'] ?? 'Nom';
+$_SESSION['utilisateur_prenom'] = $_SESSION['utilisateur_prenom'] ?? 'Prénom';
+$_SESSION['utilisateur_role_id'] = $_SESSION['utilisateur_role_id'] ?? null;
+$_SESSION['utilisateur_role_nom'] = $_SESSION['utilisateur_role_nom'] ?? 'Chargement...';
+
+
+// Récupérer le rôle actuel de l'utilisateur depuis la session ou la base de données
+if (is_null($_SESSION['utilisateur_role_id'])) { // Utiliser is_null ou !isset pour vérifier explicitement
+    try {
+        $stmtRole = $conn->prepare("SELECT u.role_id, r.nom_role FROM utilisateur u JOIN role r ON u.role_id = r.id WHERE u.id = :id");
+        $stmtRole->execute([':id' => $utilisateur_id]);
+        $roleData = $stmtRole->fetch(PDO::FETCH_ASSOC);
+        if ($roleData) {
+            $_SESSION['utilisateur_role_id'] = $roleData['role_id'];
+            $_SESSION['utilisateur_role_nom'] = $roleData['nom_role'];
+        } else {
+            // Gérer le cas où le rôle ne peut pas être trouvé (utilisateur invalide ?)
+            $_SESSION['error_notification'] = "Votre rôle n'a pas pu être chargé. Veuillez réessayer.";
+            header("Location: designin.php"); // Déconnecter l'utilisateur
+            exit();
+        }
+    } catch (PDOException $e) {
+        $_SESSION['error_notification'] = "Erreur de base de données : " . $e->getMessage();
+        error_log("Error fetching user role in espace_passager.php: " . $e->getMessage());
+        header("Location: designin.php");
+        exit();
+    }
+}
+$current_role_id = $_SESSION['utilisateur_role_id'];
+
+// Récupérer les informations de l'utilisateur (maintenant qu'elles sont garanties non-null)
+$username = $_SESSION['utilisateur_pseudo'];
+$email = $_SESSION['utilisateur_email'];
+$nom = $_SESSION['utilisateur_nom'];
+$prenom = $_SESSION['utilisateur_prenom'];
+
 ?>
 
 <main class="main-page">
-<!--FILTRE DE RECHERCHE DE COVOITURAGES-->
-<div class="filter">
-  <h5 class="text-center">FILTREZ VOS COVOITURAGES</h5>
-  <form id ="filter-form" class="form-horizontal" action="/espace_chauffeur.php", method="POST">
-    <div class="form-group row justify-content-between">
-      <label class="control-label col-sm-3" for="tarif">Tarif maximum:</label>
-      <div class="col-sm-7">
-        <input type="number" class="form-control filter-input" id="tarif" placeholder="ex 35€" name="tarif-maximum">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="control-label col-sm-3 " for="time">Durée maximale:</label>
-      <div class="col-sm-7">          
-        <input type="time" class="form-control filter-input" id="time" placeholder="45 min" name="durée-maximale">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label class="control-label col-sm-3" for="grade">Note minimale:</label>
-      <div class="col-sm-7">          
-        <input type="number" class="form-control filter-input" id="grade" placeholder=" ex: 4 étoiles">
-      </div>
-    </div>
-    <div class="form-group row">        
-      <div class="col-sm-offset-2 col-sm-12 row ">
-            <label class="control-label col-sm-4" for="eco">Voiture écologique:</label>
-            <div class="col-sm-7">
-                <input type="checkbox" id="eco-oui" name="eco" value="oui">
-                <label for="eco-oui">Oui</label>
-                <input type="checkbox" id="eco-non" name="eco" value="non">
-                <label for="eco-non">Non</label>
-            </div>
-      </div>
-    </div>
-    <div class="form-group">        
-      <div class="col-sm-offset-2 col-sm-10">
-       <center><button type="submit" class="btn btn-primary">RECHERCHER</button></center>
-      </div>
-    </div>
-  </form>
-</div>
+    <section class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
+                <div class="card shadow p-4">
+                    <h2 class="text-center mb-4 fw-bold text-primary">Mon Espace Personnel</h2>
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-       
+                    <?php if (isset($_SESSION['notification'])): ?>
+                        <div class="alert alert-success text-center" role="alert">
+                            <?php echo htmlspecialchars($_SESSION['notification']); unset($_SESSION['notification']); ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (isset($_SESSION['error_notification'])): ?>
+                        <div class="alert alert-danger text-center" role="alert">
+                            <?php echo htmlspecialchars($_SESSION['error_notification']); unset($_SESSION['error_notification']); ?>
+                        </div>
+                    <?php endif; ?>
 
+                    <div class="mb-4 text-center">
+                        <img src="img/avatar.png" alt="Avatar" class="profile-avatar mb-3">
+                        <h3><?= htmlspecialchars($prenom . ' ' . $nom) ?></h3>
+                        <p class="text-muted"><?= htmlspecialchars($email) ?></p>
+                        <p class="text-muted">Rôle actuel: <strong><?= htmlspecialchars($_SESSION['utilisateur_role_nom'] ?? 'Non défini') ?></strong></p>
+                    </div>
 
-<!-- SECTION COVOITURAGES -->
-
-<div class="container-fluid text-center">
-  <div class="row ">
-    <div class="col">
-      
-<div class=" driver ">
-  <div class="border-2 border-dark rounded-4 m-1 " id="covoitCard" style="background-color: rgba(26, 99, 106, 0.83);">
-    <!-- Ligne supérieure avec l'image et les informations principales -->
-    <div class="row align-items-center mt-2">
-      <div class="col-sm-3">
-        <img src="img/OIP 13.jpeg" alt="chauffeur" class="m-2 rounded-circle driver-photo">
-      </div>
-      <div class=" col-sm-6 text-center text-sm-start flex-column mt-2 mt-sm-0">
-        <h5 class="fst-italic text-white" aria-label="Driver Name">Corneille</h5>
-        <p class="stars" style="font-size: 20px; color: gold;">★ ★ ★ ★ ★</p>
-      </div>
-      <div class=" col-sm-3 text-center text-sm-end mt-3 mt-sm-0">
-        <form action="vue_detailee_covoiturage.php" method="GET">
-          <input type="hidden" name="covoiturage_id">
-          <button type="submit" class="detailBtn fw-bold btn btn-primary">DETAILS</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Ligne inférieure avec les informations supplémentaires -->
-    <div class="row  justify-content-between mt-4 mb-1">
-      <div class="col-md-2  text-center">
-        <div class="yellow-opaque p-2  m-2">
-          <p class="fw-bold p-driver">Places :</p>
-          <div class="yellow p-2">
-            <h4 class="p-driver"><?php echo htmlspecialchars($covoiturage['nb_place'] ?? '0'); ?></h4>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2  text-center">
-        <div class="yellow-opaque p-2 m-2">
-          <p class="fw-bold p-driver">Prix (€) :</p>
-          <div class="yellow p-2">
-            <h4 class="p-driver"><?php echo htmlspecialchars($covoiturage['prix_personne'] ?? '0'); ?></h4>
-          </div>
-        </div>
-      </div>
-      <div class=" col-md-2  text-center">
-        <div class="yellow-opaque p-2  m-2">
-          <p class="fw-bold p-driver">Date : <?php echo htmlspecialchars($covoiturage['date_depart'] ?? 'Inconnue'); ?></p>
-          <div class="yellow p-2">
-            <p class="fw-bold arrival p-driver">Départ : <?php echo htmlspecialchars($covoiturage['heure_depart'] ?? '--:--'); ?></p>
-            <p class="fw-bold arrival p-driver">Arrivée : <?php echo htmlspecialchars($covoiturage['heure_arrivee'] ?? '--:--'); ?></p>
-          </div>
-        </div>
-      </div>
-      <div class=" col-md-3 text-center ">
-        <div class="yellow-opaque p-2  m-2">
-          <p class="fw-bold p-driver">Voiture écologique :</p>
-          <div class="yellow p-2">
-            <p class="p-driver">Oui/Non</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    </div>
-   
-    <div class="col">
-     
-<div class=" driver ">
-  <div class="border-2 border-dark rounded-4 m-1 " id="covoitCard" style="background-color: rgba(26, 99, 106, 0.83);">
-    <!-- Ligne supérieure avec l'image et les informations principales -->
-    <div class="row align-items-center mt-2">
-      <div class="col-sm-3 text-center">
-        <img src="img/OIP 13.jpeg" alt="chauffeur" class="m-2 rounded-circle driver-photo">
-      </div>
-      <div class=" col-sm-6 text-center text-sm-start flex-column mt-2 mt-sm-0">
-        <h5 class="fst-italic text-white" aria-label="Driver Name">Driver Name</h5>
-        <p class="stars" style="font-size: 20px; color: gold;">★ ★ ★ ★ ★</p>
-      </div>
-      <div class=" col-sm-3 text-center text-sm-end mt-3 mt-sm-0">
-        <form action="vue_detailee_covoiturage.php" method="GET">
-          <input type="hidden" name="covoiturage_id">
-          <button type="submit" class="detailBtn fw-bold btn btn-primary">DETAILS</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Ligne inférieure avec les informations supplémentaires -->
-    <div class="row  justify-content-between mt-4 mb-1">
-      <div class="col-md-2  text-center">
-        <div class="yellow-opaque p-2  m-2">
-          <p class="fw-bold p-driver">Places :</p>
-          <div class="yellow p-2">
-            <h4 class="p-driver"><?php echo htmlspecialchars($covoiturage['nb_place'] ?? '0'); ?></h4>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2  text-center">
-        <div class="yellow-opaque p-2 m-2">
-          <p class="fw-bold p-driver">Prix (€) :</p>
-          <div class="yellow p-2">
-            <h4 class="p-driver"><?php echo htmlspecialchars($covoiturage['prix_personne'] ?? '0'); ?></h4>
-          </div>
-        </div>
-      </div>
-      <div class=" col-md-2  text-center">
-        <div class="yellow-opaque p-2  m-2">
-          <p class="fw-bold p-driver">Date : <?php echo htmlspecialchars($covoiturage['date_depart'] ?? 'Inconnue'); ?></p>
-          <div class="yellow p-2">
-            <p class="fw-bold arrival p-driver">Départ : <?php echo htmlspecialchars($covoiturage['heure_depart'] ?? '--:--'); ?></p>
-            <p class="fw-bold arrival p-driver">Arrivée : <?php echo htmlspecialchars($covoiturage['heure_arrivee'] ?? '--:--'); ?></p>
-          </div>
-        </div>
-      </div>
-      <div class=" col-md-3 text-center ">
-        <div class="yellow-opaque p-2  m-2">
-          <p class="fw-bold p-driver">Voiture écologique :</p>
-          <div class="yellow p-2">
-            <p class="p-driver">Oui/Non</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    </div>
-  </div>
-</div>
-
-
-
-
-<!-- FORMULAIRE MODIFICATION DE DATE -->
-
-
-<div class="container col-md-6 search-form mb-5 mt-5">
-  <form class="form-horizontal " action="espace_chauffeur.php" method="post" style="position:center;">
-        <p class="fw-bold text-center">Si vous n'êtes pas satisfaire, veuillez modifier votre date de départ.</p>
-        <div class="edit-covoit-group">
-          <label class="edit-covoit-label col-sm-2 edit-covoit-form" for="adress1">votre position actuelle:</label>
-          <div class="col-sm-10">          
-              <input type="adress" class="form-control" name="real_position" id="adress1" placeholder=" ex: 91 rue de la paix, 95300 Paris">
-          </div>
-        </div>
-        <div class="edit-covoit-group">
-            <label class="edit-covoit-label col-sm-2 edit-covoit-form" for="adress2">Adresse d'arrivée:</label>
-            <div class="col-sm-10">
-              <input type="adress" class="form-control"  name= "destination" id="adress2" placeholder=" ex: 81 rue de la joie, 95300 Paris">
-            </div>
-        </div>
-        <div class="edit-covoit-group">
-            <label class="edit-covoit-label col-sm-2 edit-covoit-form" for="date">Nouvelle date:</label>
-            <div class="col-sm-10">
-              <input type="date" class="form-control" name="new_date" id="date" placeholder=" ex: 12/12/2021">
-            </div>
-        </div>
-        <center> <button type="submit" class="btn btn-primary m-4" name="search_covoit" >RECHERCHER</button></center>
-        </form>
- </div>
-
-
-<!--INFORMATIONS SUR LE CHAUFFEUR-->
-<div class="container ">
-  <div class="card driverGlobalInfo"  style="background-color: rgba(26, 99, 106, 0.83);">
-    <div class="card-header text-center">
-        <h4 class=" text-white"> MON ESPACE CHAUFFEUR</h4>
-    </div>
-    <div class="card-body">
-            <div class="row text-center">
-                <div class="col-md-3 driver-star">
-                    <img src="img/OIP 13.jpeg" alt="Photo du conducteur" class="profile-pic driver-photo">
+                    <div class="list-group mb-4">
+                        <h5 class="text-center rounded m-2 p-2" style="background-color:black; color:white;">MON ESPACE PASSAGER</h5>
+                        <a href="modifier_profil.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <span>Modifier mon profil</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="modifier_mot_de_passe.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <span>Changer mon mot de passe</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="historique_passager.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <span>Mes voyages en tant que passager</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="mes_reservations.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <span>Mes réservations actuelles</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="designin.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-danger">
+                            <span>Se déconnecter</span>
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </div>
                     
-                    <div class="mb-3 driver1 ">
-                    <h5 class="mt-2 driver1 driver-name2 text-white">BRUNO DACOSTA</h5> 
-                            <span class="text-warning">&#9733;</span>
-                            <span class="text-warning">&#9733;</span>
-                            <span class="text-warning">&#9733;</span>
-                            <span class="text-warning">&#9734;</span>
-                            <span class="text-warning">&#9734;</span>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="row text-white">
-                        <div class="col-md-4">
-                            <p><strong>Places restantes :</strong> 2</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>Animaux de compagnie :</strong> Oui</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>Fumeurs :</strong> Non</p>
-                        </div>
-                    </div>
-                    <div class="row text-white">
-                        <div class="col-md-4">
-                            <p><strong>MARQUE DE LA VOITURE :</strong><br> TESLA</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>MODÈLE DE LA VOITURE :</strong><br> Modèle 3</p>
-                        </div>
-                        <div class="col-md-4">
-                            <p><strong>ÉNERGIE UTILISÉE :</strong><br> Électrique</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
- 
-            <hr><!-- Ligne de séparation -->
- 
-            <h5 class="text-center" style="background-color:black; color:white;" >AVIS SUR LE CHAUFFEUR</h5>
-            <div class="list-group">
-                <div class="clientView">
-                    <div class="d-flex">
-                        <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
-                        <div>
-                            <h6>Suzie CASTORAMA</h6>
-                            <p class="mb-0">Super voyage</p>
-                            <p class="text-muted small">Une expérience inoubliable, merci beaucoup !</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="clientView">
-                    <div class="d-flex">
-                        <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
-                        <div>
-                            <h6>Suzie CASTORAMA</h6>
-                            <p class="mb-0">Désagréable</p>
-                            <p class="text-muted small">Bavard et curieux sur ma vie.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="clientView">
-                    <div class="d-flex">
-                        <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
-                        <div>
-                            <h6>Suzie CASTORAMA</h6>
-                            <p class="mb-0">Nice travel</p>
-                            <p class="text-muted small">Super expérience, je recommande vivement !</p>
-                        </div>
-                    </div>
-                </div>
-            </div>            
-            <h5 class="text-center historique mt-3 mb-3" style="background-color:black; color:white;" >HISTORIQUE DE MES COVOITURAGES</h5>
-            <div class="clientView  ">
-                <div class="start-covoit text-center justify-content-center pt-3">
-                    <h6>COVOITIURAGE ACTUELLEMENT EN COURS</h6>
-                    <button type="submit" class="btn btn-primary  fw-bold mb-2">DEMARRER</button>
-                    <button type="submit" class="btn btn-primary fw-bold mb-2">ARRIVER A DESTINATION</button>
-                </div>
-                    <div class="d-flex">
-                        <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
-                        <div>
-                            <h6>Suzie CASTORAMA</h6>
-                            <p class="mb-0">Super voyage</p>
-                            <p class="text-muted small fw-bold">Une expérience inoubliable, merci beaucoup !</p>
-                        </div>
-                    </div>
-                </div>
-            <div class="list-group">
-                <div class=" style="background-color: rgba(26, 99, 106, 0.83);"">
-                    <div class="d-flex">
-                        <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
-                        <div>
-                            <h6>Suzie CASTORAMA</h6>
-                            <p class="mb-0">Super voyage</p>
-                            <p class="text-muted small fw-bold">Une expérience inoubliable, merci beaucoup !</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="clientView">
-                    <div class="d-flex">
-                        <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
-                        <div>
-                            <h6>Suzie CASTORAMA</h6>
-                            <p class="mb-0">Désagréable</p>
-                            <p class="text-muted small fw-bold">Bavard et curieux sur ma vie.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="clientView">
-                    <div class="d-flex">
-                        <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
-                        <div>
-                            <h6>Suzie CASTORAMA</h6>
-                            <p class="mb-0">Nice travel</p>
-                            <p class="text-muted small fw-bold">Super expérience, je recommande vivement !</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    <hr class="my-4">
 
-           
-<!--FORMULAIRE DE SAISIE DE COVOITURAGE PAR LE CONDUCTEUR-->
-<h5 class="text-center historique" style="background-color:black; color:white;" >VOUS ETES CHAUFFEUR, VEUILLEZ SAISIR VOTRE PROCHAIN COVOITURAGE CI-DESSOUS</h5>
-<div class="container col-md-6  insertCovoit ">
-  <form class="form-horizontal " action="espace_chauffeur.php"  method="POST" >    
-        <p class="edit-covoit-title text-center fw-bold">Saisir mon covoiturage en tant que chauffeur.</p>
-        <div class="edit-covoit-group row">
-          <label class="edit-covoit-label col-sm-3 edit-covoit-form" for="date1">Date de départ:</label>
-            <div class="col-sm-8">          
-              <input type="date" class="form-control m-1" name="date_depart" id="date1" placeholder=" ex: 91 rue de la paix, 95300 Paris">
-            </div>
-        </div>
+                    <h5 class="text-center rounded m-2 p-2" style="background-color:black; color:white;">MON ESPACE CHAUFFEUR</h5>
+                    
+                    <?php
+                    // Afficher les options de gestion de profil chauffeur et de saisie de voyage
+                    // uniquement si l'utilisateur est chauffeur ou chauffeur_passager
+                    if ($current_role_id == $ID_ROLE_CHAUFFEUR || $current_role_id == $ID_ROLE_CHAUFFEUR_PASSAGER) {
+                    ?>
+                        <div class="list-group mb-4">
+                            <a href="gerer_profil_chauffeur.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <span>Gérer mon profil chauffeur (véhicules et préférences)</span>
+                                <i class="fas fa-car"></i>
+                            </a>
+                        </div>
+                        <center> 
+                            <a href="saisir_voyage.php" class="btn btn-warning btn-block account-btn mb-4">PROPOSER UN COVOITURAGE</a>
+                        </center>
+                        <div class="list-group mb-4">
+                            <a href="mes_covoiturages_chauffeur.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <span>Mes covoiturages en cours</span>
+                                <i class="fas fa-route"></i>
+                            </a>
+                            <a href="historique_chauffeur.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <span>Historique de mes covoiturages</span>
+                                <i class="fas fa-history"></i>
+                            </a>
+                        </div>
+                    <?php
+                    } else {
+                        // Si l'utilisateur n'est pas chauffeur, lui proposer de le devenir
+                    ?>
+                        <div class="alert alert-info text-center" role="alert">
+                            Vous n'êtes pas encore enregistré comme chauffeur. Devenez chauffeur pour proposer des covoiturages !
+                        </div>
+                        <center>
+                            <a href="devenir_chauffeur.php" class="btn btn-success btn-lg mb-4">DEVENIR CHAUFFEUR</a>
+                        </center>
+                    <?php
+                    }
+                    ?>
 
-        <div class="edit-covoit-group row">
-          <label class="edit-covoit-label col-sm-3 edit-covoit-form " for="date2">Date d'arrivée:</label>
-            <div class="col-sm-8">          
-              <input type="date" class="form-control m-1" name="date_arrivee" id="date2" placeholder=" ex: 91 rue de la paix, 95300 Paris">
-            </div>
-        </div>
+                    <hr class="my-4">
 
-        <div class="edit-covoit-group row">
-          <label class="edit-covoit-label col-sm-3 edit-covoit-form" for="hour1">Heure de départ:</label>
-          <div class="col-sm-8">          
-              <input type="time" class="form-control m-1" name="heure_depart" id="hour1" placeholder=" ex: 12h 00">
-          </div>
+                    <h5 class="text-center historique rounded m-2 p-2" style="background-color:black; color:white;">HISTORIQUE DE MES COVOITURAGES</h5>
+                    <div class="list-group-item">
+                        <h6 class="text-center pt-2 pb-2 text-white fw-bold" style="background-color: #343a40;">COVOITURAGE ACTUELLEMENT EN COURS</h6>
+                            <div class=" d-flex justify-content-center pt-2 pb-3">
+                                <button type="submit" class="btn btn-primary btn-covoit me-2">VALIDER COVOITURAGE</button>
+                                <button type="submit" class="btn btn-primary btn-covoit me-2"><a href="avis.php" style="color:white; text-decoration:none;">SOUMETTRE UN AVIS</a></button>
+                            </div>
+                    </div>
+                    <div class="list-group clientView">
+                        <div class="list-group-item" style="background-color:rgba(241, 220, 15, 0.7);">
+                            <div class="d-flex">
+                                <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
+                                <div class="">
+                                    <h6>Suzie CASTORAMA</h6>
+                                    <p class="mb-0">Super voyage</p>
+                                    <p class="text-muted small">Une expérience inoubliable, merci beaucoup !</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item" style="background-color:rgba(241, 220, 15, 0.7);">
+                            <div class="d-flex">
+                                <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
+                                <div>
+                                    <h6>Suzie CASTORAMA</h6>
+                                    <p class="mb-0">Désagréable</p>
+                                    <p class="text-muted small">Bavard et curieux sur ma vie.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item" style="background-color:rgba(241, 220, 15, 0.7);">
+                            <div class="d-flex">
+                                <img src="img/oipg.jpg" alt="Avatar" class="profile-pic me-3">
+                                <div>
+                                    <h6>Suzie CASTORAMA</h6>
+                                    <p class="mb-0">Nice travel</p>
+                                    <p class="text-muted small">Super expérience, je recommande vivement !</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
+</main>
 
-        <div class="edit-covoit-group row">
-          <label class="edit-covoit-label col-sm-3 edit-covoit-form" for="hour2">Heure d'arrivée:</label>
-          <div class="col-sm-8">          
-              <input type="time" class="form-control m-1" name="heure_arrivee" id="hour2" placeholder=" ex: 15h 00">
-          </div>
-        </div>
-
-        <div class="edit-covoit-group row">
-          <label class="edit-covoit-label col-sm-3 edit-covoit-form" for="adress1">Adresse de départ:</label>
-          <div class="col-sm-8">          
-              <input type="adress" class="form-control m-1" name="adresse_depart" id="adress1" placeholder=" ex: 91 rue de la paix, 95300 Paris">
-          </div>
-        </div>
-        <div class="edit-covoit-group row">
-            <label class="edit-covoit-label col-sm-3 edit-covoit-form" for="adress2">Adresse d'arrivée:</label>
-            <div class="col-sm-8">
-              <input type="adress" class="form-control m-1" name= "adresse_arrivee" id="adress2" placeholder=" ex: 81 rue de la joie, 95300 Paris">
-            </div>
-        </div>
-        <div class="edit-covoit-group row">
-            <label class="edit-covoit-label col-sm-3 edit-covoit-form" for="price">Prix (€):</label>
-            <div class="col-sm-8">
-              <input type="number" class="form-control m-1" name="prix_personne" id="price" placeholder=" ex: 35 euros">
-            </div>
-        </div>
-        
-        <div class="edit-covoit-group row">
-            <label class="edit-covoit-label col-sm-8 edit-covoit-form text-center" for="car">Choisir une voiture(déjà inscrite):</label>
-            <div class="col-sm-12">
-              <select name="voiture_id" id="car" class="text-center">
-                <option value="1">VOLVO</option>
-                <option value="2">AUDI</option>
-                <option value="3">BMW</option>
-                <option value="4">TESLA</option>
-                </select>
-            </div>
-        </div>
-       
-        <div class="edit-covoit-group row">
-            <label class="edit-covoit-label col-sm-3 edit-covoit-form" for="place">Places disponibles:</label>
-            <div class="col-sm-8">
-              <input type="number" class="form-control m-1"  name="nb_place" id="place" placeholder="ex: 4 places">
-            </div>
-        </div>
-
-        <div class="edit-covoit-group row">
-            <label class="edit-covoit-label col-sm-3 edit-covoit-form" for="place">Statut du covoiturage:</label>
-            <div class="col-sm-8">
-              <input type="text" class="form-control m-1"  name="statut" id="place" placeholder="ex: en cours">
-            </div>
-        </div>
-        <center><button type="submit" class="btn btn-primary m-3 fw-bold" name ="create_covoit">ENVOYER</button></center>
-
-        <p class="fw-bold pt-3 text-center">ENREGISTRER UNE NOUVELLE VOITURE CI-DESSOUS </p>
-        <div class="edit-covoit-group">
-            
-            <div class="col-sm-12">
-            <center><a href="nouvelle_voiture.php" class="btn btn-primary m-3 fw-bold">ENREGISTRER UNE NOUVELLE VOITURE</a></center>
-            </div>
-        </div>
-        </form>
- </div>
-  </div>
-</div>
- </main>
-<?php
-include_once 'footer.php';
-?>
+<?php include_once 'footer.php'; ?>

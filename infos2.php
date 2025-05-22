@@ -2,6 +2,26 @@
 include_once 'header.php';
 ?>
 
+<?php   
+if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_car'])){
+    $utilisateur_id = 1;
+    $marque = $_POST['marque'];
+    $modele = $_POST['modele'];
+    $immatriculation = $_POST['immatriculation'];
+    $energie = $_POST['energie'];
+    $couleur = $_POST['couleur'];
+    $date_premiere_immatriculation = $_POST['date_premiere_immatriculation'];
+    $places_dispo = $_POST['places_dispo'];
+
+    $sql = "INSERT INTO voiture (utilisateur_id, marque, modele, immatriculation, energie, couleur, date_premiere_immatriculation, places_dispo) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
+    $req = $conn->prepare($sql);
+
+    if($req->execute([$utilisateur_id, $marque, $modele, $immatriculation, $energie, $couleur, $date_premiere_immatriculation, $places_dispo])){
+        header("location: infos3.php");  // REDIRECTION VERS LA PAGE SUIVANTE 
+        exit(); // ARRET DE L'EXECUTION DU SCRIPT apres la redirection
+    } 
+}  
+?>
 <main>
 <div class="container account-form mb-3" style="background: rgb(237, 215, 15, 0.9); border-radius: 10px; padding: 20px; margin-top: 20px;">
     <p class="text-center creation-title fw-bold">Vous poursuivez votre inscription en tant que Chauffeur ou  Chauffeur/Passager, veuillez enrégistrer votre voiture ci-dessous</p>
@@ -62,6 +82,8 @@ include_once 'header.php';
 </form>
 </div>
 </main>
+
+<!-- Footer -->
     <?php
 include_once 'footer.php';
 ?>
