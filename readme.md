@@ -11,13 +11,19 @@ Utilisation
 Contribuer
 Licence
 
-Fonctionnalités
-* Développer
-*  l’espace utilisateur (US8)
+     Fonctionnalités
+
+* Menu de l'appplication
+* fonctionnalité d'authentification
+* fonctionnalité participer à un covoiturage
+* Gestion des utilisateurs avec différents rôles (Administrateur, employé, chauffeur, passager);
+*  Developpement de l'espace utilisateur (US8)
 *  Fonctionnalité de saisie d’un voyage par le chauffeur (US9)
-*  Développer l’historique des covoiturages (US10)
-*   Fonctionnalité démarrer/arrêter un covoiturage (US11)
-*   Développer l’espace utilisateur (US8)
+*  Développement l’historique des covoiturages (US10)
+* Fonctionnalité démarrer/arrêter un covoiturage (US11)
+* Fonctionnalité des graphiques
+* Fonctionnalité filtre de covoiturages
+* fonctionnalité soummettre des avis (US8)
 
 
 
@@ -27,6 +33,7 @@ Base de données relationnelle : MySQL
 Base de données non relationnelle : MongoDB
 Frontend : HTML, CSS, JavaScript
 Serveur web : Apache (via XAMPP)
+
 Prérequis
 PHP 7.4 ou plus récent
 MySQL 5.7 ou plus récent
