@@ -30,6 +30,8 @@ Licence
 Technologies utilisées
 clonner le dépôt
 Configuration de la base de données MySQL
+Configuration de l'application
+Installation des dépendances
 
 
 Backend : PHP
