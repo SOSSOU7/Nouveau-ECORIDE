@@ -32,7 +32,9 @@ clonner le dépôt
 Configuration de la base de données MySQL
 Configuration de l'application
 Installation des dépendances
-
+Lancer le serveur
+Si vous utilisez XAMPP, placez le projet dans le répertoire htdocs :
+Demarrer Apache et MySQL à partir de XAMPP control panel
 
 Backend : PHP
 Base de données relationnelle : MySQL
