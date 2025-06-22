@@ -25,16 +25,16 @@ Licence
 * Fonctionnalité filtre de covoiturages
 * fonctionnalité soummettre des avis (US8)
 
-
-
 Technologies utilisées
 clonner le dépôt
 Configuration de la base de données MySQL
 Configuration de l'application
 Installation des dépendances
+
 Lancer le serveur
-Si vous utilisez XAMPP, placez le projet dans le répertoire htdocs :
-Demarrer Apache et MySQL à partir de XAMPP control panel
+1- Si vous utilisez XAMPP, placez le projet dans le répertoire htdocs :
+2- Demarrer Apache et MySQL à partir de XAMPP control panel
+3- Accédez à l'application via votre navigateur à l'adresse :
 
 Backend : PHP
 Base de données relationnelle : MySQL
