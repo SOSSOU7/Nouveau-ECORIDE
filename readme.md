@@ -10,7 +10,16 @@ Installation
 Utilisation
 Contribuer
 Licence
+
 Fonctionnalités
+* Développer
+*  l’espace utilisateur (US8)
+*  Fonctionnalité de saisie d’un voyage par le chauffeur (US9)
+*  Développer l’historique des covoiturages (US10)
+*   Fonctionnalité démarrer/arrêter un covoiturage (US11)
+*   Développer l’espace utilisateur (US8)
+
+
 
 Technologies utilisées
 Backend : PHP
