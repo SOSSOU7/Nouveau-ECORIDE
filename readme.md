@@ -26,10 +26,10 @@ Licence
 * fonctionnalité soummettre des avis (US8)
 
 Technologies utilisées
-clonner le dépôt
-Configuration de la base de données MySQL
-Configuration de l'application
-Installation des dépendances
+1- clonner le dépôt
+2- Configuration de la base de données MySQL
+3- Configuration de l'application
+4- Installation des dépendances
 
 Lancer le serveur
 1- Si vous utilisez XAMPP, placez le projet dans le répertoire htdocs :
