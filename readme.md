@@ -28,6 +28,10 @@ Licence
 
 
 Technologies utilisées
+clonner le dépôt
+Configuration de la base de données MySQL
+
+
 Backend : PHP
 Base de données relationnelle : MySQL
 Base de données non relationnelle : MongoDB
